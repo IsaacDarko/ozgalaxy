@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AiFillPlayCircle } from 'react-icons/ai';
 import { SiEthereum } from 'react-icons/si';
 import { BsInfoCircle } from 'react-icons/bs';
-
+import { shortenAddress } from '../utils/shortenAddress';
 import { Loader } from './'
 import { TransactionContext } from '../Context/TransactionContext'
 
@@ -23,6 +23,7 @@ const Welcome = () => {
         connectWallet,
         currentAccount,
         formData,
+        isLoading,
         sendTransaction,
         handleChange,
     } = useContext(TransactionContext);
@@ -107,7 +108,7 @@ const Welcome = () => {
                             </div>
                             <div>
                                 <p className='text-white font-light text-sm'>
-                                    Address
+                                    {shortenAddress(currentAccount)}
                                 </p>
                                 <p className='text-white font-semibold text-lg mt-1'>
                                     Ethereum
@@ -125,7 +126,7 @@ const Welcome = () => {
 
                         <div className='h-[1px] w-full bg-gray-400 my-2' />
 
-                        {false ?
+                        { isLoading ?
                             (
                                 <Loader />
                             ) : (
