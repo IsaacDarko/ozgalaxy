@@ -14,11 +14,8 @@ const { ethereum } = window;
 const getEthereumContract = () => {
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const transactionContract = new ethers.Contract(contractAddress, contractABI, signer)
-    console.log({
-        signer,
-        transactionContract
-    })
+    const transactionContract = new ethers.Contract(contractAddress, contractABI, signer);
+    
     return transactionContract; 
 }
 
@@ -29,6 +26,8 @@ export const TransactionProvider = ({ children }) => {
     //Declare useState variables
     const [currentAccount, setCurrentAccount] = useState('');
     const [formData, setFormData] = useState({addressTo:'', amount:'', keyword:'', message:''});
+    const [isLoading, setIsLoading] = useState(false);
+    const [transactionCount, setTransactionCount] = useState(localStorage.getItem('transactionCount'))
 
 
     //this function checks if there is an ethereum account connected to the app (to be used on every render)
@@ -68,21 +67,43 @@ export const TransactionProvider = ({ children }) => {
 
 
 
-
+    //simple function to handle form field changes
     const handleChange = async (e, name) => {
         setFormData((prevState) => ({ ...prevState, [name]: e.target.value })) 
     }
 
 
 
-
+    //this function initiates all processing for sending crypto on the ethereum blockchain
     const sendTransaction = async () => {
         try {
             console.log('sendTransaction fired')
             const {addressTo, amount, keyword, message} = formData;
             if(!ethereum) return alert('Please Install MetaMask Browser Extention In Order To Use Our Services');
+
             const transactionContract = getEthereumContract();
-            console.log(transactionContract)
+            const parsedAmount = ethers.utils.parseEther(amount)
+
+            await ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [{
+                    from: currentAccount,
+                    to: addressTo,
+                    gas: '0x5208', //21000 GWEI
+                    value: parsedAmount._hex
+                }]
+            })
+
+            const transactionHash  =  await transactionContract.addToBlockchain(addressTo, parsedAmount, message, keyword);
+            setIsLoading(true)
+            console.log(`Loading - ${transactionHash.hash}`);
+            await transactionHash.wait();
+            setIsLoading(false)
+            console.log(`Success - ${transactionHash.hash}`);
+
+            const transactionCount = await transactionContract.getTransactionCount;
+            setTransactionCount(transactionCount.toNumber());
+            
         } catch(error) {
             console.log(error)
         }
