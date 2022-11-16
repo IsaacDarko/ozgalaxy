@@ -1,0 +1,26 @@
+{
+  "name": "ozgalaxy_web3",
+  "version": "1.0.0",
+  "description": "fullstack ethereum blockchain application for sending and receiving ethereum",
+  "main": "client/",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cloudflare-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://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@github.com/IsaacDarko/ozgalaxy.git"
+  },
+  "keywords": [
+    "web3.0",
+    "ethereum",
+    "transfer",
+    "crypto"
+  ],
+  "author": "Isaac Tsibu-Darko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IsaacDarko/ozgalaxy/issues"
+  },
+  "homepage": "https://github.com/IsaacDarko/ozgalaxy#readme"
+}
